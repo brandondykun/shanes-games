@@ -37,7 +37,7 @@ const WizardGame = () => {
       ctx.setNum1(getRandomInt(min, max));
       ctx.setNum2(getRandomInt(min, max));
     }
-  }, [ctx.questionNumber]);
+  }, [ctx.questionNumber, router]);
 
   const handleGuess = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
