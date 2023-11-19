@@ -3,7 +3,7 @@
 import { useWizardsContext } from "@/app/context/WizardContext";
 
 const WizardGameResults = () => {
-  const { context } = useWizardsContext();
+  const { points, questionNumber, wonGame } = useWizardsContext();
 
   const winningContent = (
     <div>
@@ -20,10 +20,10 @@ const WizardGameResults = () => {
   return (
     <main className="min-h-screen p-8 flex flex-col">
       <h1>Wizard Game Results</h1>
-      {context.wonGame ? winningContent : losingContent}
+      {wonGame ? winningContent : losingContent}
       <div>
-        <div>Points: {context.points}</div>
-        <div>Question Number: {context.questionNumber}</div>
+        <div>Points: {points}</div>
+        <div>Question Number: {questionNumber}</div>
       </div>
     </main>
   );
