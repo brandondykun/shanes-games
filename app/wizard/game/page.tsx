@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import { getRandomInt } from "../../util/util";
@@ -26,59 +26,25 @@ const WizardGame = () => {
     setNum2,
     guess,
     setGuess,
-    isGuessCorrect,
-    setIsGuessCorrect,
     answerSubmitted,
     setAnswerSubmitted,
-    wonGame,
     setWonGame,
-    gameOver,
     setGameOver,
   } = useWizardsContext();
 
   const router = useRouter();
 
   useEffect(() => {
-    if (questionNumber === 51) {
-      setGameOver(true);
-      setWonGame(true);
-      router.push("/wizard/results");
-    } else if (livesRemaining === 0) {
-      setGameOver(true);
-      setWonGame(false);
-      router.push("/wizard/results");
-    } else {
-      const isSuperQuestion = getIsSuperQuestion(questionNumber);
-      setGuess("");
-      setAnswerSubmitted(false);
-      setIsGuessCorrect(false);
-
-      const min = isSuperQuestion ? 100 : 10;
-      const max = isSuperQuestion ? 1000 : 100;
-      setNum1(getRandomInt(min, max));
-      setNum2(getRandomInt(min, max));
-    }
-  }, [
-    questionNumber,
-    router,
-    livesRemaining,
-    setAnswerSubmitted,
-    setGameOver,
-    setGuess,
-    setIsGuessCorrect,
-    setNum1,
-    setNum2,
-    setWonGame,
-  ]);
+    setNum1(getRandomInt(1, 100));
+    setNum2(getRandomInt(1, 100));
+  }, []);
 
   const handleGuess = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (num1 && num2) {
       const isSuperQuestion = getIsSuperQuestion(questionNumber);
-      const isCorrect = Number(guess) === num1 + num2;
-      setIsGuessCorrect(isCorrect);
       setAnswerSubmitted(true);
-
+      const isCorrect = Number(guess) === num1 + num2;
       if (isCorrect) {
         handleCorrectAnswer(isSuperQuestion, setPoints, setLivesRemaining);
       } else {
@@ -97,9 +63,33 @@ const WizardGame = () => {
     }
   };
 
+  const handleNextClick = () => {
+    setQuestionNumber((prev) => prev + 1);
+    setAnswerSubmitted(false);
+    setGuess("");
+    if (questionNumber === 50) {
+      setGameOver(true);
+      setWonGame(true);
+      router.push("/wizard/results");
+    } else if (livesRemaining === 0) {
+      setGameOver(true);
+      setWonGame(false);
+      router.push("/wizard/results");
+    } else {
+      const isSuperQuestion = getIsSuperQuestion(questionNumber + 1);
+      const min = isSuperQuestion ? 100 : 10;
+      const max = isSuperQuestion ? 1000 : 100;
+      setNum1(getRandomInt(min, max));
+      setNum2(getRandomInt(min, max));
+    }
+  };
+
   const result = useMemo(() => num1 && num2 && num1 + num2, [num1, num2]);
 
   const isSuperQuestion = getIsSuperQuestion(questionNumber);
+
+  const isCorrect =
+    num1 && num2 && answerSubmitted && Number(guess) === num1 + num2;
 
   return (
     <main className="min-h-screen p-8 flex flex-col">
@@ -128,7 +118,7 @@ const WizardGame = () => {
           className={`bg-neutral-900 p-12 rounded-lg border-solid border h-fit md:w-[450px] ${
             !answerSubmitted
               ? "border-neutral-700"
-              : isGuessCorrect
+              : isCorrect
               ? "border-green-500"
               : "border-red-700"
           }`}
@@ -158,12 +148,12 @@ const WizardGame = () => {
           </div>
         </div>
         <div className="text-xl text-center pt-12">
-          {answerSubmitted && isGuessCorrect && (
+          {answerSubmitted && isCorrect && (
             <div className="text-neutral-200">
               Correct. You got {isSuperQuestion ? "5 points" : "1 point"}.
             </div>
           )}
-          {answerSubmitted && !isGuessCorrect && (
+          {answerSubmitted && !isCorrect && (
             <div className="text-neutral-200">
               Incorrect. The correct answer is {result}. You now have{" "}
               {livesRemaining} {livesRemaining === 1 ? "life" : "lives"}{" "}
@@ -177,7 +167,7 @@ const WizardGame = () => {
       <div className="flex justify-end">
         <Button
           text="Next"
-          onClick={() => setQuestionNumber((prev) => prev + 1)}
+          onClick={handleNextClick}
           disabled={!answerSubmitted}
           className="w-24"
         />
