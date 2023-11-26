@@ -19,7 +19,7 @@ const DifficultySelector = ({ setDifficulty, difficulty }: Props) => {
             : "border-gray-600 text-gray-400 hover:border-gray-300"
         }`}
       >
-        Easy
+        Easy - $50
       </button>
       <button
         onClick={() => handleClick("medium")}
@@ -29,7 +29,7 @@ const DifficultySelector = ({ setDifficulty, difficulty }: Props) => {
             : "border-gray-600 text-gray-400 hover:border-gray-300"
         }`}
       >
-        Medium
+        Medium - $100
       </button>
       <button
         onClick={() => handleClick("hard")}
@@ -39,7 +39,7 @@ const DifficultySelector = ({ setDifficulty, difficulty }: Props) => {
             : "border-gray-600 text-gray-400 hover:border-gray-300"
         }`}
       >
-        Hard
+        Hard - $1000
       </button>
     </div>
   );

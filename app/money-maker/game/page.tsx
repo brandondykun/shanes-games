@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import DifficultySelector from "./DifficultySelector";
+import Button from "@/app/components/ui/Button";
+import Question from "./Question";
 
 const MoneyMakerGame = () => {
   const [totalMoney, setTotalMoney] = useState(1);
@@ -11,10 +13,6 @@ const MoneyMakerGame = () => {
   const [selectedDifficultyLevel, setSelectedDifficultyLevel] = useState<
     "easy" | "medium" | "hard" | null
   >(null);
-
-  // easy = 1-50 -> $50
-  // medium = 50-100 -> $100
-  // hard = 100-1000 -> $1000
 
   // choice of addition or subtraction can change
   // if addition multiplication is sprinkled in randomly
@@ -32,6 +30,14 @@ const MoneyMakerGame = () => {
           difficulty={selectedDifficultyLevel}
         />
       </div>
+      {selectedDifficultyLevel && (
+        <div className="p-12 flex justify-center">
+          <Question
+            difficulty={selectedDifficultyLevel}
+            setTotalMoney={setTotalMoney}
+          />
+        </div>
+      )}
     </main>
   );
 };
